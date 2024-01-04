@@ -49,6 +49,7 @@ const loadPredicates = {
   player: () => !!twitch.getCurrentPlayer(),
   vod: () => !!twitch.updateCurrentChannel(),
   homepage: () => document.querySelector('.front-page-carousel .video-player__container') != null,
+  inventory: () => document.querySelector('.inventory-max-width') != null,
 };
 
 const routes = {
@@ -60,6 +61,7 @@ const routes = {
   CHANNEL: 'CHANNEL',
   CHANNEL_SQUAD: 'CHANNEL_SQUAD',
   DASHBOARD: 'DASHBOARD',
+  INVENTORY: 'INVENTORY',
   VOD: 'VOD',
 };
 
@@ -71,6 +73,7 @@ const routeKeysToPaths = {
   [routes.CHAT]: /^(\/popout)?\/[a-z0-9-_]+\/chat$/i,
   [routes.VOD]: /^(\/videos\/[0-9]+|\/[a-z0-9-_]+\/clip\/[a-z0-9-_]+)$/i,
   [routes.DASHBOARD]: /^(\/[a-z0-9-_]+\/dashboard|\/u\/[a-z0-9-_]+\/stream-manager)/i,
+  [routes.INVENTORY]: /^\/drops\/inventory$/i,
   [routes.CHANNEL_SQUAD]: /^\/[a-z0-9-_]+\/squad/i,
   [routes.CHANNEL]: /^\/[a-z0-9-_]+/i,
 };
@@ -158,6 +161,9 @@ function onRouteChange(location) {
       break;
     case routes.DASHBOARD:
       waitForLoad('chat').then(() => watcher.emit('load.chat'));
+      break;
+    case routes.INVENTORY:
+      waitForLoad('inventory').then(() => watcher.emit('load.inventory'));
       break;
     default:
       break;
