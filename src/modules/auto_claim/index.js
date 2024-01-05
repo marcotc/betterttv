@@ -7,7 +7,7 @@ import {loadModuleForPlatforms} from '../../utils/modules.js';
 import twitch from '../../utils/twitch.js';
 import watcher from '../../watcher.js';
 
-const AUTO_CLAIM_SELECTOR = '.chat-private-callout__header-segment';
+const AUTO_CLAIM_SELECTOR = '.inventory-max-width';
 const AUTO_CLAIM_BUTTON_SELECTOR = `${AUTO_CLAIM_SELECTOR} button[class*="ScCoreButtonPrimary"]`;
 
 let autoClaimListener;
@@ -25,19 +25,14 @@ function handleClaim(node) {
     return;
   }
 
-  const claimButton = document.querySelector(AUTO_CLAIM_BUTTON_SELECTOR);
-  if (claimButton == null) {
-    return;
-  }
-
-  claimButton.click();
+  document.querySelectorAll(AUTO_CLAIM_BUTTON_SELECTOR).forEach(claimButton => claimButton.click());
 }
 
 const handleClaimDebounced = debounce(handleClaim, 1000);
 
 class AutoClaimModule {
   constructor() {
-    watcher.on('load.chat', () => this.load());
+    watcher.on('load.inventory', () => this.load());
     settings.on(`changed.${SettingIds.AUTO_CLAIM}`, () => this.load());
   }
 
