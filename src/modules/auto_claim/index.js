@@ -12,6 +12,9 @@ const AUTO_CLAIM_BUTTON_SELECTOR = `${AUTO_CLAIM_SELECTOR} button[class*="ScCore
 
 let autoClaimListener;
 
+// HERE!
+document.querySelector(".onsite-notifipcations .onsite-notifications__badge") 
+
 function handleClaim(node) {
   const autoClaim = settings.get(SettingIds.AUTO_CLAIM);
 
