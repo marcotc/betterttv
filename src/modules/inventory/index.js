@@ -7,8 +7,8 @@ import {loadModuleForPlatforms} from '../../utils/modules.js';
 import twitch from '../../utils/twitch.js';
 import watcher from '../../watcher.js';
 
-const AUTO_CLAIM_SELECTOR = '.chat-private-callout__header-segment';
-const AUTO_CLAIM_BUTTON_SELECTOR = `${AUTO_CLAIM_SELECTOR} button[class*="ScCoreButtonPrimary"]`;
+const INVENTORY_SELECTOR = '.inventory-max-width';
+const INVENTORY_BUTTON_SELECTOR = `${INVENTORY_SELECTOR} button[class*="ScCoreButtonPrimary"]`;
 
 let autoClaimListener;
 
@@ -25,19 +25,14 @@ function handleClaim(node) {
     return;
   }
 
-  const claimButton = document.querySelector(AUTO_CLAIM_BUTTON_SELECTOR);
-  if (claimButton == null) {
-    return;
-  }
-
-  claimButton.click();
+  document.querySelectorAll(INVENTORY_BUTTON_SELECTOR).forEach(claimButton => claimButton.click());
 }
 
 const handleClaimDebounced = debounce(handleClaim, 1000);
 
-class AutoClaimModule {
+class InventoryModule {
   constructor() {
-    watcher.on('load.chat', () => this.load());
+    watcher.on('load.inventory', () => this.load());
     settings.on(`changed.${SettingIds.AUTO_CLAIM}`, () => this.load());
   }
 
@@ -50,7 +45,7 @@ class AutoClaimModule {
       autoClaimListener();
       autoClaimListener = undefined;
     } else if (shouldAutoClaim && autoClaimListener == null) {
-      autoClaimListener = domObserver.on(AUTO_CLAIM_SELECTOR, (node, isConnected) => {
+      autoClaimListener = domObserver.on(INVENTORY_SELECTOR, (node, isConnected) => {
         if (!isConnected) return;
         handleClaimDebounced(node);
       });
@@ -58,4 +53,4 @@ class AutoClaimModule {
   }
 }
 
-export default loadModuleForPlatforms([PlatformTypes.TWITCH, () => new AutoClaimModule()]);
+export default loadModuleForPlatforms([PlatformTypes.TWITCH, () => new InventoryModule()]);
